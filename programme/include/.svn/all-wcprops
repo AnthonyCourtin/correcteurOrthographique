@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/asi13-dicotonik/!svn/ver/97/trunk/programme/include
+END
+transformations.h
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/asi13-dicotonik/!svn/ver/50/trunk/programme/include/transformations.h
+END
+tadDependancesDictionnaire.h
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/asi13-dicotonik/!svn/ver/83/trunk/programme/include/tadDependancesDictionnaire.h
+END
+mot.h~
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/asi13-dicotonik/!svn/ver/97/trunk/programme/include/mot.h~
+END
+correcteur.h
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/asi13-dicotonik/!svn/ver/59/trunk/programme/include/correcteur.h
+END
+mot.h
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/asi13-dicotonik/!svn/ver/97/trunk/programme/include/mot.h
+END
+interface.h
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/asi13-dicotonik/!svn/ver/51/trunk/programme/include/interface.h
+END
+tadDictionnaire.h
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/asi13-dicotonik/!svn/ver/83/trunk/programme/include/tadDictionnaire.h
+END
+tests_unit.h
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/asi13-dicotonik/!svn/ver/44/trunk/programme/include/tests_unit.h
+END
+tadFichier.h
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/asi13-dicotonik/!svn/ver/50/trunk/programme/include/tadFichier.h
+END

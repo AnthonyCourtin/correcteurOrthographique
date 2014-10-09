@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/asi13-dicotonik/!svn/ver/97/trunk/programme/src
+END
+mot.c
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/asi13-dicotonik/!svn/ver/97/trunk/programme/src/mot.c
+END
+tests_dico.c
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/asi13-dicotonik/!svn/ver/34/trunk/programme/src/tests_dico.c
+END
+interface.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/asi13-dicotonik/!svn/ver/68/trunk/programme/src/interface.c
+END
+dependances_dictionnaire.c
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/asi13-dicotonik/!svn/ver/83/trunk/programme/src/dependances_dictionnaire.c
+END
+tadFichier.c
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/asi13-dicotonik/!svn/ver/83/trunk/programme/src/tadFichier.c
+END
+motTU.c
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/asi13-dicotonik/!svn/ver/76/trunk/programme/src/motTU.c
+END
+dictionnaire.c
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/asi13-dicotonik/!svn/ver/97/trunk/programme/src/dictionnaire.c
+END
+correcteur.c
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/asi13-dicotonik/!svn/ver/97/trunk/programme/src/correcteur.c
+END
+main_test_de_serialisation.c
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/asi13-dicotonik/!svn/ver/46/trunk/programme/src/main_test_de_serialisation.c
+END
+dictionnaireTU.c
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/asi13-dicotonik/!svn/ver/50/trunk/programme/src/dictionnaireTU.c
+END
+fichierTU.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/asi13-dicotonik/!svn/ver/46/trunk/programme/src/fichierTU.c
+END
+main.c
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/asi13-dicotonik/!svn/ver/83/trunk/programme/src/main.c
+END
+TUcorrecteur.c
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/asi13-dicotonik/!svn/ver/58/trunk/programme/src/TUcorrecteur.c
+END
+transformations.c
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/asi13-dicotonik/!svn/ver/97/trunk/programme/src/transformations.c
+END
+mot.c~
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/asi13-dicotonik/!svn/ver/97/trunk/programme/src/mot.c~
+END

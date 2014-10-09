@@ -1,0 +1,192 @@
+/**
+* \file mot.c
+* \brief Programmation des fonctions du TAD mot et liste de Mot
+* \author C. Cousseran
+* \version 7.0
+* \date 06/01/2013
+*/
+
+#include "mot.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+/**
+* \fn int obtenirLongueur(mot*)
+* \brief Fonction permettant d'obtenir la longueur d'un mot
+*
+* \param mot* word, le mot dont on souhaite obtenir la longueur
+* \return int la longueur du mot
+*/
+int obtenirLongueur(mot* word) { 
+	return word->taille;
+}
+
+/**
+* \fn void changerChar(mot *word, int pos, char elt)
+* \brief Procedure permettant de changer un caractere dans un mot
+*
+* \param elt : le nouveau caractere, pos: son indice
+*/
+void changerChar(mot *word, int pos, char elt){
+	word->contenu[pos]=elt;
+}
+
+/**
+* \fn char obtenirChar(mot *word, int pos)
+* \brief Fonction permettant d'obtenir le char a partir d'un mot et de sa position
+*
+* \ return char
+*/
+char obtenirChar(mot *word, int pos){
+    return word->contenu[pos];
+}
+
+/**
+* \fn int obtenirLongueur(mot*)
+* \brief Fonction permettant d'obtenir la longueur d'un mot
+*
+* \param mot* word, le mot dont on souhaite obtenir la longueur
+* \return int la longueur du mot
+*/
+void initMot(mot *word,char *entree){
+    (*word).taille  = strlen(entree);
+    (*word).contenu = calloc(obtenirLongueur(word)+1, sizeof(char));
+    memcpy(word->contenu, entree,obtenirLongueur(word));
+}
+
+/**
+* \fn void obtenirCDC(mot *word, char** res)
+* \brief Procedure permettant d'obtenir la chaine de caracteres contenue dans un mot
+*
+* \param res 
+*/
+void obtenirCDC(mot *word, char **res){
+    *res=calloc(obtenirLongueur(word)+1, sizeof(char));
+    memcpy(*res, word->contenu,obtenirLongueur(word));
+}
+
+/**
+* \fn void copierMot(mot *word1, mot *word2)
+* \brief Fonction permettant de copier un mot dans un autre (copie mot 2 dans 1)
+*
+*/
+void copierMot(mot *word1, mot *word2){ 
+    word1->taille=obtenirLongueur(word2);
+ 	(*word1).contenu = calloc(obtenirLongueur(word1)+1, sizeof(char));
+    memcpy(word1->contenu, word2->contenu,obtenirLongueur(word2));
+}
+
+/**
+* \fn void decaler(mot *word, mot *newWord)
+* \brief Permet de décaler un mot vers la gauche
+*
+*/
+void decaler(mot *word, mot *newWord)
+{
+ int i;
+ if (obtenirLongueur(word) > 0)
+ {
+ 	(*newWord).taille  = obtenirLongueur(word)-1;
+ 	(*newWord).contenu = calloc(obtenirLongueur(newWord)+1, sizeof(char));
+ 	if ((*newWord).contenu == NULL)
+ 	{
+ 		exit(EXIT_FAILURE);
+ 	}
+ 	else
+ 	{
+ 		for(i = 0; i < (*word).taille; i++)
+ 		{
+ 			changerChar(newWord,i,obtenirChar(word,i+1));
+ 		}
+ 	}
+ }
+ else
+ {
+	(*newWord).taille = 0;
+ 	(*newWord).contenu = calloc(1,sizeof(char));
+ 	(*newWord).contenu = '\0';
+ }
+}
+
+
+/**Liste Chainée*/
+
+/**
+* \fn int estPresentListe(listeCM liste, mot wordTest)
+* \brief Retourne le nombre d'occurence d'un mot dans une liste
+*
+* \return int
+*/ 
+int estPresentListe(listeCM liste, mot wordTest) /*renvoie nbOcc*/
+{
+    int res=0;
+    listeMot *temp=liste;
+    while(temp!=NULL)
+    {
+        if (strcmp(temp->word.contenu,wordTest.contenu)==0)
+        {
+            res=res+1;
+        }
+        temp=temp->next;
+    }
+    return res;
+}
+
+/**
+* \fn listeCM ajouterListe(mot wordE,listeCM liste)
+* \brief Permet d'ajouter un mot à une liste de mot
+*
+* \param wordE : le mot à ajouter, liste :la liste de mot
+* \return listeCM
+*/
+listeCM ajouterListe(mot wordE,listeCM liste){
+    if (estPresentListe(liste,wordE)==0)
+    {
+        listeMot* nouvelElement = malloc(sizeof(listeMot));
+        nouvelElement->word = wordE;
+        nouvelElement->next = liste;
+        return nouvelElement;
+    }
+    else
+    {
+        return liste;
+    }
+
+}
+
+/**
+* \fn void afficherListe(listeCM liste)
+* \brief Permet d'afficher une liste de mot
+*
+* \param liste : la liste à afficher
+*/
+void afficherListe(listeCM liste)
+{
+    listeMot *temp = liste;
+    while(temp != NULL)
+    {
+        printf("%s \n", temp->word.contenu);
+        temp = temp->next;
+    }
+}
+
+/**
+* \fn listeCM concatenerListe(listeCM liste1, listeCM liste2)
+* \brief Concatene les deux listes, dans le cas où un mot est inclus dans les deux listes, il n'est copié qu'une fois
+*
+* \return listeCM le résultat de la concaténation
+*/
+listeCM concatenerListe(listeCM liste1,listeCM liste2)
+{
+    listeMot *listeTemp=liste2;
+    while (listeTemp != NULL)
+    {
+        if (estPresentListe(liste1,listeTemp->word)==0)
+        {
+            liste1=ajouterListe(listeTemp->word,liste1);
+        }
+        listeTemp=listeTemp->next;
+    }
+    return liste1;
+}

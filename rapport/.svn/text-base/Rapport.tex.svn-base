@@ -1,0 +1,842 @@
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass{scrreprt}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[francais]{babel, varioref}
+\usepackage{graphicx}
+\usepackage{algorithmeUTF8}
+\usepackage{xspace}
+\usepackage{amssymb}
+\usepackage{calc}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\graphicspath{{./images/}}
+
+%\pagestyle{fancy}
+%\renewcommand{\headrulewidth}{0.4pt}
+
+\usepackage[top=2.1cm,bottom=2.2cm,left=2cm,right=2cm]{geometry}
+\usepackage[final]{pdfpages}
+
+\usepackage{templateINSA}
+\initINSA
+
+\title{Dicotonik}
+
+\author{Mickaël \bsc{Billiotte}\\ Anthony \bsc{Courtin}\\ Cédric \bsc{Cousseran}\\Viviane \bsc{Desgrange}\\Quentin \bsc{Diaferia}}
+\renewcommand\soustitre{Rapport de projet}
+\renewcommand\infoBig{Projet Algorithmique}
+\renewcommand\infoSmall{ASI3 2013-2014}
+
+\begin{document}
+
+\titleINSA{15}{images/page.png}{0}{0}{225}{}{}
+\tableofcontents
+
+\newpage
+
+\newpage
+\chapter{Introduction}
+Dans le cadre de l'EC Algorithmique et base de la programmation, il nous a été demandé de réaliser un projet en groupe composé de 5 à 6 personnes. Le but de ce projet est de réaliser un correcteur orthographique de type \textit{ispell} et \textit{aspell}. 
+
+Dans un premier le programme doit demander à l'utilisateur de rentrer une phrase. Une fois entrée, la phrase est analysée puis chaque mot comportant une erreur orthographique est traité. Une fois le traitement fini, le correcteur propose à l'utilisateur une ou plusiseurs solutions afin de corriger ses erreurs.
+\newline
+
+Afin de mener à bien ce projet nous sommes passés par les étapes ci dessous.
+
+\section{R\'epartition du travail}
+
+\begin{center}
+   \begin{tabular}{| l | c | c | c | c |c |}
+\hline
+      		Tâche		& Mickaël B. & Anthony C. & Cédric C. & Viviane D. & Quentin D. \\ 
+\hline
+\multicolumn{6}{c}{}\\
+\cline{1-1}
+\verb|TAD|			     	&   		   	\multicolumn{5}{l}{}	    			  \\ 
+\hline
+Interface							&		  &		x  &			 &	x		&  \\
+\hline
+Correcteur						&	x	  &		  &		x	 &		&	x  \\
+\hline
+Mot						&	x  &	x	  &			 &			&  \\
+\hline
+Dictionnaire				&		  &		  &		x	 &	x	&	x  \\
+\hline
+\multicolumn{6}{c}{}\\
+\cline{1-1}
+\verb|Conception Préliminaire|     		&   		   	\multicolumn{5}{l}{}	    			  \\
+\hline
+dicotonik						&		  &		  &			 &	x		& \\
+\hline
+recupererEntreeStandard					&		  &		x  &			 &		&	  \\
+\hline
+aide				&		  &		x  &			 &		&	  \\
+\hline
+transformation					&		  &		  &			 &		&	x  \\
+\hline
+remplacementLettre					&		  &		  &			 &		&	x  \\
+\hline
+inversionLettre					&	x	  &		  &			 &		&	  \\
+\hline
+suppressionLettre					&		  &		  &			 &	x	&	  \\
+\hline
+estUnSeparateur					&		  &		  &		x	 &		&	  \\
+\hline
+decompoMot					&		  &		  &			 &	x	&	  \\
+\hline
+analyserPhrase					&	x	  &		  &			 &		&	  \\
+\hline
+estPresent					&		  &		  &		x	 &		&	  \\
+\hline
+ajouterMot					&		  &		  &		x	 &		&	  \\
+\hline
+corrigerEntree					&	x	  &		  &			 &		&	  \\
+\hline
+creerEnsembleMotAAjouter					&		x  &		  &			 &		&	  \\
+\hline
+\multicolumn{6}{c}{}\\
+\cline{1-1}
+\verb|Codage|     				&   		   	\multicolumn{5}{l}{}	    			  \\
+\hline
+dicotonik						&	x	  &		  &			 &			& x \\
+\hline
+recupererEntreeStandard					&		x  &		  &			 &		&	  \\
+\hline
+aide				&		  &		  &			 &		&	x  \\
+\hline
+transformation					&		  &		  &	x		 &		&	  \\
+\hline
+remplacementLettre					&		  &		  &		x	 &		&	  \\
+\hline
+inversionLettre					&		  &		  &		x	 &		&	  \\
+\hline
+suppressionLettre					&		  &		  &		x	 &		&	  \\
+\hline
+estUnSeparateur					&		  &		x  &			 &		&	  \\
+\hline
+decompoMot					&		  &		x  &			 &		&	  \\
+\hline
+analyserPhrase					&		  &		x  &			 &		&	  \\
+\hline
+estPresent					&		  &		  &			 &	x	&	  \\
+\hline
+ajouterMot					&		  &		  &			 &	x	&	  \\
+\hline
+corrigerEntree					&		  &		  &			 &	x	&	  \\
+\hline
+creerEnsembleMotAAjouter					&		  &		  &			 &	x	&	  \\
+\hline
+tests unitaires					&	x	  &	x	  &			 &		&	x  \\
+\hline
+   \end{tabular}
+ \end{center}
+
+
+\chapter{TAD}
+\section{TAD Interface}
+\begin{tad}
+   \tadNom{Interface}
+   \tadDependances{\chaine}
+   \begin{tadOperations}{Interface}
+     \tadOperation{dicotonik}{\tadDeuxParams{\naturel}{\chaine}}{\booleen}
+     \tadOperation{recupererEntreeStandard}{}{\tadUnParam{\chaine}}
+     \tadOperation{aide}{}{\tadUnParam{\chaine}}
+   \end{tadOperations}
+   \begin{tadSemantiques}{Interface}
+     \tadSemantique{dicotonik}{analyse la commande et effectue l'opération correspondante}
+     \tadSemantique{recupererEntreeStandard}{permet de récupérer une chaîne entrée via le clavier}
+     \tadSemantique{aide}{affiche l'aide associée au programme}
+   \end{tadSemantiques}
+\end{tad}
+
+\section{TAD Correcteur}
+\begin{tad}
+   \tadNom{Correcteur}
+   \tadDependances{\Mot, \booleen, \Dictionnaire, \chaine, \ListeOrdonnee}
+   \begin{tadOperations}{Correcteur}
+     \tadOperation{analyserPhrase}{\chaine}{ \tadUnParam{\ListeOrdonneeMot}}
+     \tadOperation{transformerMot}{\Mot}{ \tadUnParam{\Mot}}
+   \end{tadOperations}
+   \begin{tadSemantiques}{Correcteur}
+     \tadSemantique{analyserPhrase}{découpe la phrase à corriger en mots à corriger selon différents séparateurs (espace, ponctuation...)}
+     \tadSemantique{transformerMot}{applique différentes transformations syntaxiques à un mot}
+   \end{tadSemantiques}
+\end{tad}
+
+\section{TAD Mot}
+\begin{tad}
+   \tadNom{Mot}
+   \tadDependances{\chaine, \naturel}
+   \begin{tadOperations}{Mot}
+     \tadOperation{mot}{\chaine}{ \tadUnParam{\Mot}}
+     \tadOperation{longueur}{\Mot}{ \tadUnParam{\naturel}}
+   \end{tadOperations}
+   \begin{tadSemantiques}{Mot}
+     \tadSemantique{mot}{crée un mot à partir d'une chaine de caractères}
+     \tadSemantique{longueur}{donne le nombre de caractères composant le mot}
+   \end{tadSemantiques}
+\end{tad}
+
+\section{TAD Dictionnaire}
+\begin{tad}
+   \tadNom{Dictionnaire}
+   \tadDependances{\Mot, \booleen, \FichierTexte, \chaine}
+   \begin{tadOperations}{Dictionnaire}
+     \tadOperation{dictionnaire}{\chaine}{ \tadUnParam{\Dictionnaire}}
+     \tadOperation{inserer}{\tadDeuxParams{\Dictionnaire}{\FichierTexte}}{ \tadUnParam{\Dictionnaire}}
+     \tadOperation{contientMot}{\tadDeuxParams{\Dictionnaire}{\Mot}}{ \tadUnParam{\booleen}}
+   \end{tadOperations}
+   \begin{tadSemantiques}{Dictionnaire}
+     \tadSemantique{dictionnaire}{creation d'un dictionnaire à partir de son nom}
+     \tadSemantique{inserer}{ajoute un ou plusieurs mots d'un fichier texte dans un dictionnaire directement au bon endroit (ordre alphabétique)}
+     \tadSemantique{contientMot}{vérifie si un mot est présent dans le dictionnaire} 
+   \end{tadSemantiques}
+\end{tad}
+
+\newpage
+\chapter{Analyse Descendante}
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[height=11cm]{analyseDescendante.jpg}
+\end{center}
+\end{figure}
+
+\chapter{Conception Préliminaire}
+\section{Interface}
+
+	\subsection{dicotonik}
+	\begin{algorithme}
+		\signaturefonction{dicotonik}
+		{nbArguments : \naturel, arguments : \EnsembleDeMot}
+		{\chaine \newline}
+	\end{algorithme}
+
+	\subsection{recupererEntreeStandard}
+	\begin{algorithme}
+		\signatureprocedure{recupererEntreeStandard}
+		{} 
+	\end{algorithme}
+
+	\subsection{aide}
+	\begin{algorithme}
+		\signatureprocedure{aide}
+		{} 
+	\end{algorithme}
+	
+\section{Correcteur}
+
+	\subsection{corrigerEntree}
+	\begin{algorithme}
+		\signatureprocedure{corrigerEntree}
+		{\paramEntree{fichierDictionnaire : \FichierTexte, dico : \Dictionnaire, phrase : \chaine}}
+	\end{algorithme}
+
+	\subsection{estUnSeparateur}
+	\begin{algorithme}
+		\signaturefonction{estUnSeparateur}
+		{c : \caractere}
+		{\booleen}
+	\end{algorithme}
+
+	\subsection{decompoMot}
+	\begin{algorithme}
+		\signatureprocedure{decompoMot}
+		{\paramEntree{chaine: \chaine}, \paramEntreeSortie{pos : \naturel}, \paramSortie{res : \chaine}}
+	\end{algorithme}
+
+	\subsection{analyserPhrase}
+	\begin{algorithme}
+		\signaturefonction{analysePhrase}
+		{chaine : \chaine}
+		{Ensemble $<$\Mot$>$}
+	\end{algorithme}
+	
+	\subsection{correctionMot}
+	\begin{algorithme}
+		\signatureprocedure{correctionMot}
+		{\paramEntree{fichierDictionnaire : \FichierTexte, dico : \Dictionnaire, word : \Mot}}
+	\end{algorithme}
+	
+	\subsection{estPresent}
+	\begin{algorithme}
+		\signaturefonction{estPresent}
+		{AdR : \Dictionnaire; word : \Mot}
+		{\booleen}
+	\end{algorithme}
+
+\section{Transformations des mots}
+
+	\subsection{transformation}
+	\begin{algorithme}
+		\signaturefonction{transformation}
+		{word: \Mot, dico : \Dictionnaire}
+		{\EnsembleDeMot}
+	\end{algorithme}
+
+	\subsection{remplacementLettre}
+	\begin{algorithme}
+		\signaturefonction{remplacementLettre}
+		{word: \Mot, dico : \Dictionnaire}
+		{\EnsembleDeMot}
+	\end{algorithme}
+
+	\subsection{inversionLettre}
+	\begin{algorithme}
+		\signaturefonction{inversionLettre}
+		{word: \Mot, dico : \Dictionnaire}
+		{\EnsembleDeMot}
+	\end{algorithme}
+
+	\subsection{suppressionLettre}
+	\begin{algorithme}
+	  \signaturefonction{suppressionLettre}
+	  {word: \Mot, dico: \Dictionnaire}
+	  {\EnsembleDeMot}
+	\end{algorithme}
+	
+\section{Dictionnaire}	
+
+	\subsection{ajouterMot}
+	\begin{algorithme}
+		\signatureprocedure{ajouterMot}
+		{\paramEntreeSortie{dico: \Dictionnaire};\paramEntree{word: \Mot}}
+	\end{algorithme}
+
+	\subsection{supprimerMot}
+	\begin{algorithme}
+		\signatureprocedure{supprimerMot}
+		{\paramEntreeSortie{dico: \Dictionnaire}; \paramEntree{word: \Mot}} 
+	\end{algorithme}
+
+
+\chapter{Conception Détaillée}
+
+\section{Interface}
+	\subsection{dicotonik}
+	\begin{algorithme}
+		\fonction
+		{dicotonik}
+		{nbArguments : \naturel, arguments : \EnsembleDeMot}
+		{\chaine}
+		{dico, fichier : \FichierTexte}
+		{
+			\sialorssinon{(nbArguments = 2) et (arguments[1] = '-d')}
+			{
+				\affecter{dico}{fichierTexte(arguments[2])}
+				\instruction{ouvrir(dico, lecture)}
+				\sialorssinon{estOuvert(dico)}
+				{
+					\instruction{corrigerEntree(dico, entreeStandart())}
+					\instruction{fermer(dico)}
+				}
+				{
+					\ecrire{Ce dictionnaire n'existe pas.}
+				}
+			}
+			{
+				\sialorssinon{(nbArguments = 4) et (arguments[1] = '-d') et (arguments[3] = '-f')}
+				{
+					\affecter{fichier}{fichierTexte(arguments[4])}
+					\instruction{ouvrir(fichier, lecture)}
+					\sialorssinon{estOuvert(fichier)}
+					{
+						\affecter{dico}{fichierTexte(arguments[4])}
+						\instruction{ouvrir(dico, ecriture)}
+						\instruction{completerDico(dico, fichier)}
+						\instruction{fermer(dico)}
+						\instruction{fermer(fichier)}
+					}
+					{
+						\ecrire{Ce fichier n'existe pas.}
+					}
+				}
+				{
+					\instruction{aide()}
+				}
+			}
+		}
+	\end{algorithme}
+
+	\subsection{recupererEntreeStandard}
+	\begin{algorithme}
+		\procedure{recupererEntreeStandard}
+		{}
+		{entreeStandard : \FichierTexte, fichierTmp : \FichierTexte, temp : \caractere}
+		{
+			\affecter{entreeStandard}{stdin}
+			\affecter{fichierTmp}{fichierTexte("")}
+			\sialorssinon{estOuvert(entreeStandard)}
+			{
+				\affecter{fichierTmp}{ouvrir("fichiers/fichierTmp.txt", ecriture)}
+				\tantque{non finFichier(fichierTmp)}
+				{
+					\instruction(lireCaractere(entreeStandard, temp))
+					\instruction(ecrireCaractere(fichierTmp, temp))
+				}
+				\instruction{fermer(entreeStandard)}
+			}
+			{
+				\ecrire{"Erreur."}
+			}
+			\instruction{fermer(fichierTmp)}
+		}
+	\end{algorithme}
+
+	\subsection{aide}
+	\begin{algorithme}
+		\procedure{aide}
+		{}
+		{}
+		{
+			\ecrire{"Aide de Dicotonik :"}
+			\ecrire{"dicotonik -h : cette aide"}
+			\ecrire{"dicotonik -d dico : correction de l'entrée standard à l'aide du dictionnaire dico"}
+			\ecrire{"dicotonik -d dico -f fic : compléter le dictionnaire dico à l'aide des mots du fichier texte fic (un mot par ligne)"}
+		}
+	\end{algorithme}
+	
+	
+	
+\section{Correcteur}
+
+	\subsection{corrigerEntree}
+	\begin{algorithme}
+		\small
+		\procedure{corrigerEntree}
+		{\paramEntree{fichierDictionnaire : \FichierTexte, dico : \Dictionnaire, phrase : \chaine}}
+		{ensemble : Ensemble $<$Mot$>$, i, j : \naturel}
+		{
+			\pour{i}{0}{30}{}
+			{
+				\affecter{ensemble[i].contenu}{""}
+				\instruction{analyser(phrase, ensemble)}
+				\pour{j}{0}{30}{}
+				{
+					\sialors{non ensemble[j].contenu = ""}
+					{
+						\instruction{correctionMot(fichierDictionnaire, dico, ensemble[j])}
+					}
+				}
+			}
+		}
+	\end{algorithme}
+	
+	\subsection{estUnSeparateur}
+	\begin{algorithme}
+		\fonction{estUnSeparateur}
+		{c : \caractere}
+		{\booleen}
+		{res : \booleen, caractereActuel : \entier, fichier : \FichierTexte}
+		{
+			\affecter{res}{FAUX}
+			\affecter{caractereActuel}{0}
+			\affecter{fichier}{fichierTexte("")}
+			\instruction{ouvrir("fichiers/separateur.txt", lecture)}
+			\sialorssinon{non estOuvert(fichier)}
+			{
+				\ecrire{"Erreur."}
+			}
+			{
+				\tantque{(non finFichier(fichier)) et (res = FAUX)}
+				{
+					\instruction{lireCaractere(fichier, caractereActuel)}
+					\sialors{caractereActuel = c}
+					{
+						\affecter{res}{VRAI}
+					}
+				}
+			}
+			\retourner{res}
+		}
+	\end{algorithme}
+
+	\subsection{decompoMot}
+	\begin{algorithme}
+		\procedure{decompoMot}
+		{\paramEntree{chaine: \chaine}, \paramEntreeSortie{pos : \naturel}, \paramSortie{res : \chaine}}
+		{i, j : \naturel}
+		{
+			\affecter{j}{0}
+			\affecter{i}{pos}
+			\tantque{non estUnSeparateur(iemeCaractere(c,i)) et i $<$ logueur(c)}
+			{
+				\affecter{res[j]}{chaine[i]}
+				\affecter{i}{i+1}
+				\affecter{j}{j+1}
+			}
+			\affecter{pos}{i+1}
+		}
+	\end{algorithme}
+	
+	\subsection{analyserPhrase}
+	\begin{algorithme}
+		\fonction
+		{analyserPhrase}
+		{chaine : \chaine}
+		{Ensemble $<$\Mot$>$}
+		{pos, i : \naturel, resultat : \chaine, tmp : \Mot, ensemble : Ensemble $<$\Mot$>$}
+		{
+			\affecter{pos}{0}
+			\affecter{i}{0}
+			\affecter{ensemble}{ensemble()}
+			\tantque{pos $<$ longueur(chaine)}
+			{
+				\affecter{resultat}{""}
+				\instruction{decompoMot(chaine, pos, resultat)}
+				\sialors{non longueur(chaine) = 0}
+				{
+					\instruction{initMot(tmp, resultat)}
+					\instruction{copierMot(ensemble[i], tmp)}
+					\affecter{i}{i+1}
+				}
+			}
+			\retourner{ensemble}
+		}
+	\end{algorithme}
+
+	
+	\subsection{correctionMot}
+	\begin{algorithme}
+		\small
+		\procedure{correctionMot}
+		{\paramEntree{fichierDictionnaire : \FichierTexte, dico : \Dictionnaire, word : \Mot}}
+		{listeVariante : Liste Chainée $<$\Mot$>$}
+		{
+			\affecter{listeVariante}{listeChainee()}
+			\sialorssinon{estPresent(dico, word)}
+			{
+				\ecrire{"* " + word.contenu}
+			}
+			{
+				\affecter{listeVariante}{transformation(word, dico)}
+				\ecrire{"\& " + word.contenu}
+				\sialorssinon{non estVide(listeVariante)}
+				{
+					\tantque{non estVide(listeVariante)}
+					{
+						\ecrire{JE NE COMPRENDS PAS CETTE LIGNE}
+						\affecter{listeVariante}{obtenirListeSuivante(listeVariante)}
+					}
+				}
+				{
+					\ecrire("Aucune correction.");
+				}
+			}
+		}
+	\end{algorithme}
+	
+	\subsection{estPresent}
+	\begin{algorithme}
+        %\begin{structure}{DonneesAdRFils}
+        %        \champStructure{valeur}{\caractere}
+        %        \champStructure{pointeur}{\typePointeur{Dictionnaire}}
+        %\end{structure}
+        \fonction
+        {estPresent}
+        {AdR : \Dictionnaire; word : \Mot}
+        {\booleen}
+        {car,elementFils : \caractere; i : \naturel; l : Liste de $<$DonneesAdRFils$>$; AdRFils : DonneesAdRFils; newWord :\Mot; pointeurAdRFils : \typePointeur{\Dictionnaire} }
+        {
+         \affecter{car}{iemeCaractere(word,1)}
+         \affecter{i}{1}
+         \instruction{obtenirFils(AdR,l)}
+
+         \repeter
+         {
+                \affecter{AdRFils}{obtenirElementListe(l,i)}
+                \affecter{elementFils}{obtenirValeur(AdRFils)}
+                \affecter{i}{i+1}
+         }{(car=elementFils)}
+       
+
+         \sialorssinon{((car$\neq$"$\backslash$0") ET (obtenirPointeur(AdRFils)=NULL)) OU ((car="$\backslash$0") ET (obtenirPointeur(AdRFils)=NULL)) } %ou bien : obtenirBooleen(AdR)=FAUX
+        {
+            \retourner(FAUX)
+        }
+        {
+            \sialorssinon{(car="$\backslash$0") ET (obtenirPointeur(AdRFils)$\neq$NULL))} %ou bien : obtenirBooleen(AdR) = VRAI à voir lequel est le mieux.
+            {
+                \retourner(VRAI)
+            }
+            {
+                \affecter{newWord}{decaler(word)}
+                \affecter{pointeurAdRFils,obtenirPointeur(AdRFils)}
+                \retourner(estPresent(*pointeurAdRFils,newWord))
+            }
+        }
+        }
+	\end{algorithme}	 
+
+\section{Transformations des mots}
+
+	\subsection{transformation}
+	\begin{algorithme}
+		\fonction
+		{transformation}
+		{word:\Mot, dico : \Dictionnaire}
+		{\EnsembleDeMot}
+		{}
+		{	  \retourner{union(remplacementLettre(mot,dico),union(inversionLettre(mot,dico),\\ union(suppressionLettre(mot,dico),insertionLettre(mot,dico))))}
+		}
+	\end{algorithme}
+
+
+	\subsection{remplacementLettre}
+	\begin{algorithme}
+		\fonction
+		{remplacementLettre}
+		{word : \Mot, dico : \Dictionnaire}
+		{\EnsembleDeMot}
+		{ens:\EnsembleDeMot, temp : \Mot, lettre : \caractere, i,j : \entier}
+		{
+		  \affecter{ens}{Ensemble()}
+		  \pour{i}{1}{longueur(word)}{}
+			{
+			\affecter{ens}{Ensemble()}
+			\affecter{lettre}{'a'}
+			\pour{j}{1}{26}{}
+			  {
+			  \affecter{temp}{word}
+			  \affecter{iemeCaractere(temp,i)}{lettre}
+			  \sialors{non estPresent(ens,temp) et estBon(dico, temp)}
+			{
+			\instruction{ajouter(ens,temp)}
+			}
+			  \affecter{lettre}{succ(lettre)}
+			  }
+			}
+			\retourner{ens}
+		}
+	\end{algorithme}
+
+
+	\subsection{inversionLettre}
+	\begin{algorithme}
+		\fonction
+		{inversionLettre}
+		{word : \Mot, dico : \Dictionnaire}
+		{\EnsembleDeMot}
+		{ens : \EnsembleDeMot , mottemp : \Mot , temp : \caractere, i ; \entier}
+		{
+		  \affecter{ens}{Ensemble()}
+		  \pour{i}{1}{longueur(word)-1}{}
+		  {
+			\sialors{iemeCaractere(word,i) $\neq$ iemeCaractere(word,i+1)}
+			{
+			  \affecter{mottemp}{word}
+			  \affecter{temp}{iemeCaractere(mottemp,i)}
+			  \affecter{iemeCaractere(mottemp,i)}{iemeCaractere(mottemp,i+1)}
+			  \affecter{iemeCaractere(mottemp,i+1)}{temp}
+			  \sialors{non estPresent(ens,mottemp) et estBon(dico,temp)}
+			  {
+			\instruction{ajouter(ens,mottemp)}
+			  }
+			}
+		  }
+		  \retourner{ens}
+		}	
+	\end{algorithme}
+
+	\subsection{suppressionLettre}
+	\begin{algorithme}
+	  \fonction
+	  {suppressionLettre}
+	  {word: \Mot, dico: \Dictionnaire}
+	  {\EnsembleDeMot}
+	  {ens : \EnsembleDeMot, i,j: \entier, mottemp : \Mot}
+	  {
+		\affecter{ens}{Ensemble()}
+		\pour{i}{1}{longueur(mot)}{}
+		{
+		  \affecter{mottemp}{word}
+		  \pour{j}{i+1}{longueur(word)}{}
+		  {
+		\affecter{iemeCaractere(mottemp, j-1)}{iemeCaractere(mottemp,j)}
+		  }
+		  \sialors{non estPresent(ens,mottemp) et estBon(dico,temp)}
+		  {
+		  \instruction{ajouter(ens,mottemp)}
+		  }
+		  \retourner{ens}
+		}
+	  }
+	\end{algorithme}
+
+\section{Dictionnaire}
+
+	\subsection{ajouterMot}
+	\begin{algorithme}
+		%\begin{structure}{DonneesAdRFils}
+		%	\champStructure{valeur}{\caractere}
+		%	\champStructure{pointeur}{\typePointeur{Dictionnaire}}
+		%\end{structure}
+
+
+			\procedure
+		{ajouterMot}
+		{\paramEntreeSortie{dico:\Dictionnaire}; \paramEntree{word: \Mot}}
+		{i,j : \naturel; str : \chaine;car,elementFils : \caractere; l : liste $<$DonneesAdRFils$>$; nouveauFils:\Dictionnaire}
+		{
+		\affecter{str}{obtenirValeur(word)}
+		\instruction{obtenirFils(dico,l)}
+		\affecter{car}{iemeCaractere(str,i)}
+		\affecter{j}{0}
+		\repeter
+		{
+			\affecter{j}{j+1}
+			\affecter{AdRFils}{obtenirElementListe(l,i)}
+			\affecter{elementFils}{obtenirValeur(AdRFils)}
+		}{car=elementFils}
+
+		\sialorssinon{(car$\neq$"$\backslash$0") ET (obtenirPointeur(AdRFils)=NULL)}
+		{
+			\affecter{nouveauFils}{arbre()}
+			\instruction{modifierPointeur(dico,j,\&nouveauFils)} %modifierPointeur est une procédure qui va faire pointer le dico vers le fils.
+			\affecter{newWord}{decaler(word)}
+			\instruction{ajouterMot(nouveauFils,newWord)} %nouveauFils est un arbre sur lequel pointe dico, donc on peut l'envoyer directement.
+		}
+		{
+			\sialorssinon{(car$\neq$"$\backslash$0") ET (obtenirPointeur(AdRFils)$\neq$NULL)}
+			{
+				\affecter{newWord}{decaler(word)}
+			\affecter{pointeurAdRFils}{obtenirPointeur(AdRFils)}
+			\instruction{ajouterMot(*pointeurAdRFils,newWord)} %contrairement à avant, AdR_fils est une structure pointant sur le prochaine arbre, donc, on doit envoyer la valeur du pointeur de AdR_fils.
+			}
+			{
+				\sialors{(car="$\backslash$0") ET (obtenirPointeur(AdRFils)=NULL)} %version où pour verifier l'existence d'un mot, on regarde si le caractere de fin de chaine pointe vers un quelque chose autre que NULL.
+			{
+				\affecter{nouveauFils}{arbre()}
+				\instruction{modifierPointeur(dico,j,\&nouveauFils)}
+			}
+			}
+		}
+	}
+	\end{algorithme}
+
+	\subsection{supprimerMot}
+	\begin{algorithme}
+		%\begin{structure}{DonneesAdRFils}
+		%	\champStructure{valeur}{\caractere}
+		%	\champStructure{pointeur}{\typePointeur{Dictionnaire}}
+		%\end{structure}
+		\procedure{supprimerMot}
+		{\paramEntreeSortie{dico: \Dictionnaire}; \paramEntree{word: \Mot}}
+		{j : \naturel, str : \chaine, car,elementFils : \caractere, l : liste $<$DonneesAdRFils$>$, AdRFils : DonneesAdRFils, 
+		pointeurAdRFils : \typePointeur{\Dictionnaire}, newWord :\Mot}
+		{
+		\affecter{str}{obtenirValeur(word)}
+		\affecter{car}{iemeCaractere(str,1)}
+		\affecter{j}{0}
+		\instruction{obtenirFils(dico,l)}
+		\repeter
+		{
+			\affecter{j}{j+1}
+			\affecter{AdRFils}{obtenirElementListe(l,j)}
+			\affecter{elementFils}{obtenirValeur(AdRFils)}
+		}{car=elementFils}
+		
+		\sialorssinon{(car="$\backslash$0")}
+		{
+			\instruction{modifierPointeur(dico,j,NULL)}
+		}
+		{
+			\affecter{pointeurAdRFils}{obtenirPointeur(AdRFils)}
+			\affecter{newWord}{decalerMot(word)}
+			\instruction{supprimerMot(*pointeurAdRFils,newWord)}
+		}
+
+		}
+	\end{algorithme}
+
+	\subsection{creerEnsembleMotAAjouter}
+	\begin{algorithme}
+		\small
+		\procedure{creerEnsembleMotAAjouter}
+		{\paramEntree{fichierMotAAjouter: Fichier}, \paramSortie {ensembleMotAAjouter: Ensemble $<$Mot$>$}}
+		{tmp : \Mot}
+		{
+			\item \textbf{OUVRIR} (fichierMotAAjouter) \textbf{EN LECTURE} \\
+
+			\tantque{temp != EOF}
+				{
+					\affecter {temp}{\textbf{lire}(fichierMotAAjouter)} \\
+					\item \textbf{ajouter}(ensembleMotAAjouter,temp)
+				}
+
+			\textbf{FERMER}(fichierMotAAjouter)
+			
+		}
+	\end{algorithme}
+
+\chapter{Code C et tests unitaires}
+
+\lstset{
+	breaklines=true,
+	extendedchars=true,
+	tabsize=2,
+	language=C
+}
+
+\section{Code C}
+	\subsection{main.c}
+		\lstinputlisting{../programme/src/main.c}
+	\subsection{interface.c}
+		\lstinputlisting{../programme/src/interface.c}
+	\subsection{mot.c}
+		\lstinputlisting{../programme/src/mot.c}
+	\subsection{correcteur.c}
+		\lstinputlisting{../programme/src/correcteur.c}
+	\subsection{transformation.c}
+		\lstinputlisting{../programme/src/transformation.c}
+		
+\section{Tests unitaires}
+	\subsection{motTU.c}
+		\lstinputlisting{../programme/src/motTU.c}
+	\subsection{correcteurTU.c}
+		\lstinputlisting{../programme/src/TUcorrecteur.c}
+
+
+
+\chapter{Conclusion}
+	\section{Bilan général}
+	
+	\section{Conclusions personnelles}
+	\subsection{Mickaël Billiote}
+		\paragraph{}
+		Blabla
+	\subsection{Anthony Courtin}
+		\paragraph{}
+		Dans un premier temps, ce projet m'a permis de me confronter aux divers problèmes que l'on peut rencontrer lors de la réalisation d'un projet en groupe. Je me suis rendu compte que la discussion, l'organisation ainsi que l'entente du groupe sont trois des critères les plus importants pour mener un projet dans les meilleurs conditions possible. Le travail en groupe est quelque chose que je trouve essentiel dans la formation d'un ingénieur en informatique et j'ai apprécié que cela soit proposé dès le début de l'année.
+\newline
+
+De plus j'ai pu appliquer de manière concrète les différentes notions que nous avons pu voir en cours, tel que l'utilisation de Doxygen ou bien de CUnit. Des outils qu'il est nécessaire de maîtriser pour réaliser un projet structuré, clair et de qualité.
+\newline
+
+Pour finir, je dirai que ce projet fut une très bonne expériencequi me servira que ce soit dans ma vie professionnelle ou bien lors des PIC de l'année prochaine.
+	\subsection{Cedric Cousseran}
+		\paragraph{}
+		Ce projet a été pour moi l'occasion d'expérimenter le travail en groupe de plus de 3 élèves. Une véritable distinction des tâches a dû être faites, chose quasiment nouvelle pour moi. Ce projet m'a aussi permis de m'améliorer en C. En effet, j'ai été obligé de chercher et de réfléchir au-delà du cours pour arriver à résoudre les problèmes rencontrés et de m'initier à svn, qui me sera sûrement très utile par la suite.
+	\subsection{Viviane Desgrange}
+		\paragraph{}
+		Blabla
+	\subsection{Quentin Diaferia}
+		\paragraph{}
+		L'élement le plus intéressant, et donc le point fort d'un tel projet, est le 
+		fait que celui-ci soit extrêment structuré, avec une véritable méthode de 
+		travail en groupe. La rigueur de l'utilisation d'un dépôt SVN, de consignes 
+		précises, etc, nous force à produire un travail d'une qualité nettement 
+		supérieure à ce que nous avons l'habitude de faire dans d'autres projets 
+		antérieurs.
+		\paragraph{}
+		Il nous a également permi d'apprendre à nous servir d'outils utiles voire 
+		indispensables, tels que SVN, CUnit, Doxygen, des outils que je réutiliserai 
+		avec joie dans mes futurs projets. Evidemment, appliquer sur dans un cas précis 
+		toutes les connaissances vues en cours reste quelque chose de très appréciable 
+		et enrichissante.
+
+\end{document}

@@ -1,0 +1,120 @@
+/**
+* \file mot.h
+* \brief Implantation du TAD mot et listeMot
+* \author C. Cousseran
+* \version 5.0
+* \date 06/01/2013
+*/
+
+#include <string.h>
+#ifndef MOT_DEFINED
+#define MOT_DEFINED
+#define tailleMot 30
+
+/* Partie privee */
+
+typedef struct mot{
+	int taille;
+    char *contenu;
+}mot;
+
+typedef struct listeMot listeMot;
+struct listeMot{
+    mot word;
+    struct listeMot *next;
+};
+typedef listeMot* listeCM;
+
+/* Partie Publique */
+
+/**
+* \fn void initMot(mot*, char*);
+* \brief Procedure qui initialise le contenu et la longueur d'un mot a partir d'une chaine de caracteres
+*
+*/
+void initMot(mot *word, char* entree);
+
+/**
+* \fn int obtenirLongueur(mot*)
+* \brief Fonction permettant d'obtenir la longueur d'un mot
+*
+* \param mot* word, le mot dont on souhaite obtenir la longueur
+* \return int la longueur du mot
+*/
+int obtenirLongueur(mot* word);
+
+/**
+* \fn char obtenirChar(mot *word, int pos)
+* \brief Fonction permettant d'obtenir le char a partir d'un mot et de sa position
+*
+* \ return char
+*/
+char obtenirChar(mot *word, int pos);
+
+/**
+* \fn void obtenirCDC(mot *word, char** res)
+* \brief Procedure permettant d'obtenir la chaine de caracteres contenue dans un mot
+*
+* \param res 
+*/
+void obtenirCDC(mot *word, char** res);
+
+/**
+* \fn void changerChar(mot *word, int pos, char elt)
+* \brief Procedure permettant de changer un caractere dans un mot
+*
+* \param elt : le nouveau caractere, pos: son indice
+*/
+void changerChar(mot *word, int pos, char elt);
+
+/**
+* \fn void copierMot(mot *word1, mot *word2)
+* \brief Fonction permettant de copier un mot dans un autre (copie mot 2 dans 1)
+*
+*/
+void copierMot(mot *word1, mot *word2);
+
+/**
+* \fn void decaler(mot *word, mot *newWord)
+* \brief Permet de décaler un mot vers la gauche
+*
+*/
+void decaler(mot *word, mot *newWord);
+
+/**liste chainee*/
+
+/**
+* \fn listeCM ajouterListe(mot wordE,listeCM liste)
+* \brief Permet d'ajouter un mot à une liste de mot
+*
+* \param wordE : le mot à ajouter, liste :la liste de mot
+* \return listeCM
+*/
+listeCM ajouterListe(mot wordE,listeCM liste);
+
+/**
+* \fn void afficherListe(listeCM liste)
+* \brief Permet d'afficher une liste de mot
+*
+* \param liste : la liste à afficher
+*/
+void afficherListe(listeCM liste);
+
+/**
+* \fn listeCM concatenerListe(listeCM liste1, listeCM liste2)
+* \brief Concatene les deux listes, dans le cas où un mot est inclus dans les deux listes, il n'est copié qu'une fois
+*
+* \return listeCM le résultat de la concaténation
+*/
+listeCM concatenerListe(listeCM liste1,listeCM liste2);
+
+/**
+* \fn int estPresentListe(listeCM liste, mot wordTest)
+* \brief Retourne le nombre d'occurence d'un mot dans une liste
+*
+* \return int
+*/ 
+int estPresentListe(listeCM liste, mot wordTest);
+
+
+#endif
